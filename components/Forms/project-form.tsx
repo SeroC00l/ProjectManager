@@ -1,4 +1,5 @@
 "use client";
+import { useState } from "react";
 import {
   Form,
   FormField,
@@ -13,35 +14,55 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useToast } from "@/components/ui/use-toast";
-import { projectSchema } from "@/consts/schemas";
+import { createProject, updateProject } from "@/lib/actions/project.actions";
 import { useRouter } from "next/navigation";
-import { createProject } from "@/lib/actions/project.actions";
+import { projectSchema } from "@/consts/schemas";
+import { ProjectFormProps } from "@/type";
 
-export default function ProjectForm(user: any) {
+export default function ProjectForm({ user, project }: ProjectFormProps) {
   const router = useRouter();
   const { toast } = useToast();
+  const [loading, setLoading] = useState(false);
   const form = useForm<z.infer<typeof projectSchema>>({
     resolver: zodResolver(projectSchema),
     defaultValues: {
-      name: "",
-      description: "",
+      name: project?.name || "",
+      description: project?.description || "",
     },
   });
+
   const onSubmit = async (values: z.infer<typeof projectSchema>) => {
     try {
-      const projectWithOwner = { ...values, owner: user.user.id };
-      await createProject(projectWithOwner);
-      router.push("/");
-      toast({
-        title: "Success",
-        description: "Project created successfully",
-      });
+      console.log("hola");
+      setLoading(true);
+      const owner = user?.id || project?.owner;
+      const projectWithOwner = { ...values, owner };
+      if (project) {
+        const updatedProject = await updateProject(
+          project.id,
+          projectWithOwner
+        );
+        router.push(`/${updatedProject?.id}`);
+        toast({
+          title: "Success",
+          description: "Project updated successfully",
+        });
+      } else {
+        const newProject = await createProject(projectWithOwner);
+        router.push(`/${newProject.id}`);
+        toast({
+          title: "Success",
+          description: "Project created successfully",
+        });
+      }
     } catch (error) {
-      console.error("Error creating project:", error);
+      console.error("Error creating/updating project:", error);
       toast({
         title: "Error",
-        description: "Failed to create project",
+        description: "Failed to create/update project",
       });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -71,8 +92,11 @@ export default function ProjectForm(user: any) {
               </FormItem>
             )}
           />
-          <Button variant={"outline"} type="submit">
-            Create Project
+          <Button
+            className="text-secondary-foreground"
+            type="submit"
+          >
+            {project ? "Update Project" : "Create Project"}
           </Button>
         </CardContent>
       </form>

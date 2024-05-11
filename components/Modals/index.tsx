@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -7,27 +6,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Plus } from "lucide-react";
-import { ReactNode } from "react";
+import { ModalProps } from "@/type";
 
-interface ModalProps {
-  title: string;
-  description: string;
-  form?: ReactNode;
-}
-
-export function Modal({ title, description, form }: ModalProps) {
+export function Modal({ title, description, form, children }: ModalProps) {
   return (
     <Dialog>
-      <DialogTrigger asChild>
-        <Button
-          variant="ghost"
-          className="w-full hover:bg-muted h-fit justify-start rounded-md flex gap-2"
-        >
-          <Plus className="size-6" />
-          <span>Create Project</span>
-        </Button>
-      </DialogTrigger>
+      <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>

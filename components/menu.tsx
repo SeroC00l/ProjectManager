@@ -7,7 +7,7 @@ import {
   LogOut,
   Mail,
   MessageSquare,
-  Plus,
+  Moon,
   PlusCircle,
   Settings,
   User,
@@ -32,6 +32,7 @@ import { logout } from "@/lib/actions/user.actions";
 import { toast } from "./ui/use-toast";
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { SwitchMode } from "./theme-toggle";
 
 export function MainMenu({ user }: any) {
   const imageUrl = user?.user_metadata?.avatar_url;
@@ -120,9 +121,9 @@ export function MainMenu({ user }: any) {
             </DropdownMenuPortal>
           </DropdownMenuSub>
           <DropdownMenuItem>
-            <Plus className="mr-2 h-4 w-4" />
-            <span>New Team</span>
-            <DropdownMenuShortcut>⌘+T</DropdownMenuShortcut>
+            <Moon className="size-4 mr-2"/>
+            <span className="mr-16">Dark theme</span>
+            <SwitchMode />
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
