@@ -1,7 +1,6 @@
 "use client";
 import {
   Cloud,
-  CreditCard,
   Github,
   Keyboard,
   LifeBuoy,
@@ -15,7 +14,6 @@ import {
   UserPlus,
   Users,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -33,8 +31,16 @@ import {
 import { logout } from "@/lib/actions/user.actions";
 import { toast } from "./ui/use-toast";
 import Link from "next/link";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 
-export function MainMenu() {
+export function MainMenu({ user }: any) {
+  const imageUrl = user?.user_metadata?.avatar_url;
+  const name = user?.user_metadata?.name;
+  const initials = name
+    ?.split(" ")
+    .map((part: string) => part[0])
+    .join("");
+
   const handleLogout = async () => {
     try {
       await logout();
@@ -53,21 +59,25 @@ export function MainMenu() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline">Open</Button>
+        <Avatar className="cursor-pointer size-8">
+          <AvatarImage src={imageUrl} alt="@shadcn" />
+          <AvatarFallback>{initials}</AvatarFallback>
+        </Avatar>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56">
-        <DropdownMenuLabel>My Account</DropdownMenuLabel>
+      <DropdownMenuContent className="w-56 p-0">
+        <DropdownMenuItem>
+          <Avatar className="cursor-pointer size-8">
+            <AvatarImage src={imageUrl} alt="@shadcn" />
+            <AvatarFallback>{initials}</AvatarFallback>
+          </Avatar>
+          <DropdownMenuLabel>{name}</DropdownMenuLabel>
+        </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuItem>
             <User className="mr-2 h-4 w-4" />
             <span>Profile</span>
             <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
-          </DropdownMenuItem>
-          <DropdownMenuItem>
-            <CreditCard className="mr-2 h-4 w-4" />
-            <span>Billing</span>
-            <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
           </DropdownMenuItem>
           <DropdownMenuItem>
             <Settings className="mr-2 h-4 w-4" />
@@ -117,8 +127,14 @@ export function MainMenu() {
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem>
-          <Github className="mr-2 h-4 w-4" />
-          <Link href="">GitHub</Link>
+          <Link
+            target="_blank"
+            href="https://github.com/SeroC00l/ProjectManager"
+            className="flex w-full"
+          >
+            <Github className="mr-2 h-4 w-4" />
+            <span>GitHub</span>
+          </Link>
         </DropdownMenuItem>
         <DropdownMenuItem>
           <LifeBuoy className="mr-2 h-4 w-4" />

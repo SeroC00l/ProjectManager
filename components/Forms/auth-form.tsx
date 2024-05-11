@@ -16,14 +16,13 @@ import Link from "next/link";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { login, signup } from "@/lib/actions/user.actions";
+import { OAuth, login, signup } from "@/lib/actions/user.actions";
 import { useToast } from "@/components/ui/use-toast";
-import { useEffect } from "react";
 import { authSchema } from "@/consts/schemas";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
+import { Provider } from "@supabase/supabase-js";
 
 export default function AuthForm() {
-  const router = useRouter();
   const pathname = usePathname();
   const { toast } = useToast();
   const form = useForm<z.infer<typeof authSchema>>({
@@ -39,19 +38,17 @@ export default function AuthForm() {
   const onSubmit = async (values: z.infer<typeof authSchema>) => {
     try {
       if (isLogin) {
-        const res = await login(values);
+        await login(values);
         toast({
           title: "Success",
           description: "User logged in successfully",
         });
-        router.push("/");
       } else {
-        const res = await signup(values);
+        await signup(values);
         toast({
           title: "Success",
           description: "User registered successfully",
-        });
-        router.push("/");
+        })
       }
     } catch (error) {
       console.error("Error al autenticar usuario:", error);
@@ -62,13 +59,17 @@ export default function AuthForm() {
     }
   };
 
-  useEffect(() => {
-    // Redirect to home if the user is already logged in
-    const isLoggedIn = localStorage.getItem("isLoggedIn");
-    if (isLoggedIn) {
-      router.push("/");
+  const handleOAuth = async (provider: Provider) => {
+    try {
+      await OAuth(provider);
+    } catch (error) {
+      console.error("Error al autenticar con OAuth:", error);
+      toast({
+        title: "Error",
+        description: "Failed to authenticate with OAuth",
+      });
     }
-  }, []);
+  };
 
   return (
     <Form {...form}>
@@ -113,7 +114,7 @@ export default function AuthForm() {
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Input {...field} />
+                    <Input {...field} type="password" />
                   </FormControl>
                   <FormMessage className="form-message" />
                 </FormItem>
@@ -121,22 +122,30 @@ export default function AuthForm() {
             />
             {isLogin ? (
               <Link href="/register" className="hover: ">
-                Don't have an account? Register
+                Don't have an account? <span className="text-primary">Register</span>
               </Link>
             ) : (
               <Link href="/login" className="hover: ">
-                Already have an account? Login
+                Already have an account? <span className="text-primary">Login</span>
               </Link>
             )}
-            <Button variant={"outline"} type="submit">
+            <Button type="submit">
               {isLogin ? "Login" : "Register"}
             </Button>
             <Label className="mx-auto">or</Label>
             <div className="flex gap-6 mx-auto">
-              <Button variant={"outline"} className="size-12">
+              <Button
+                variant={"outline"}
+                className="size-12"
+                onClick={() => handleOAuth("github")}
+              >
                 <FaGithub />
               </Button>
-              <Button variant={"outline"} className="size-12">
+              <Button
+                variant={"outline"}
+                className="size-12"
+                onClick={() => handleOAuth("google")}
+              >
                 <FaGoogle />
               </Button>
             </div>
