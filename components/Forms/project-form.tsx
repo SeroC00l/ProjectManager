@@ -17,9 +17,15 @@ import { useToast } from "@/components/ui/use-toast";
 import { createProject, updateProject } from "@/lib/actions/project.actions";
 import { useRouter } from "next/navigation";
 import { projectSchema } from "@/consts/schemas";
-import { ProjectFormProps } from "@/type";
+import { Project } from "@prisma/client";
+import { User } from "@supabase/supabase-js";
 
-export default function ProjectForm({ user, project }: ProjectFormProps) {
+interface Props {
+  user?: User;
+  project?: Project;
+}
+
+export default function ProjectForm({ user, project }: Props) {
   const router = useRouter();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
@@ -28,28 +34,22 @@ export default function ProjectForm({ user, project }: ProjectFormProps) {
     defaultValues: {
       name: project?.name || "",
       description: project?.description || "",
+      owner: project?.owner || user?.id,
     },
   });
 
-  const onSubmit = async (values: z.infer<typeof projectSchema>) => {
+  const onSubmit = async (values: z.infer<typeof projectSchema>) => {    
     try {
-      console.log("hola");
-      setLoading(true);
-      const owner = user?.id || project?.owner;
-      const projectWithOwner = { ...values, owner };
       if (project) {
-        const updatedProject = await updateProject(
-          project.id,
-          projectWithOwner
-        );
+        const updatedProject = await updateProject(project.id, values);
         router.push(`/${updatedProject?.id}`);
         toast({
           title: "Success",
           description: "Project updated successfully",
         });
       } else {
-        const newProject = await createProject(projectWithOwner);
-        router.push(`/${newProject.id}`);
+        const newProject = await createProject(values);
+        router.push(`/${newProject?.id}`);
         toast({
           title: "Success",
           description: "Project created successfully",
@@ -93,6 +93,7 @@ export default function ProjectForm({ user, project }: ProjectFormProps) {
             )}
           />
           <Button
+            disabled={loading}
             className="text-secondary-foreground"
             type="submit"
           >

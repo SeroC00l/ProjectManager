@@ -4,8 +4,3 @@ export interface ModalProps {
   form?: ReactNode;
   children?: ReactNode;
 }
-
-export interface ProjectFormProps {
-  user?: User,
-  project?: Project
-}

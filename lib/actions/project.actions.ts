@@ -21,9 +21,6 @@ export async function getUserProjects(owner: User) {
       where: {
         owner: owner.id,
       },
-      orderBy: {
-        createdAt: "desc",
-      },
     });
     return projects;
   } catch (error) {
@@ -44,10 +41,7 @@ export async function getProjectById(id: string): Promise<Project | null> {
   }
 }
 
-export async function updateProject(
-  id: string,
-  data: any
-): Promise<Project | null> {
+export async function updateProject(id: string, data: any) {
   try {
     const updatedProject = await prisma.project.update({
       where: { id },

@@ -40,7 +40,7 @@ export const Sidebar = ({ projects, user }: any) => {
                 ? `${project.name.substring(0, 10)}...`
                 : project.name}
             </span>
-            <ProjectOptions project={project} />
+            <ProjectOptions form={<ProjectForm project={project} user={user} />} />
           </Link>
         ))}
         <Modal

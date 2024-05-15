@@ -10,10 +10,7 @@ export default async function HomeLayout({ children }: { children: string }) {
   } else {
     redirect("/login");
   }
- 
-  const projects = await getUserProjects(user);
-  
-
+  const projects = await getUserProjects(user)
   return (
     <>
       <Header user={user} />

@@ -6,10 +6,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Modal } from "./Modals";
-import ProjectForm from "./Forms/project-form";
-import { Project } from "@prisma/client";
 
-export function ProjectOptions({ project }: { project: Project }) {
+export function ProjectOptions({form}: any) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -19,7 +17,7 @@ export function ProjectOptions({ project }: { project: Project }) {
         <Modal
           title="Edit Project"
           description="Edit your project"
-          form={<ProjectForm project={project} />}
+          form={form}
         >
           <button className="flex px-2 pt-1 items-center">
             <Edit className="mr-2 h-4 w-4" />
