@@ -15,4 +15,4 @@ export const projectSchema = z.object({
   name: z.string().min(3, "Project name must be at least 3 characters"),
   description: z.string().min(10, "Project description must be at least 10 characters"),
   owner: z.string().optional(),
-});
+}); 

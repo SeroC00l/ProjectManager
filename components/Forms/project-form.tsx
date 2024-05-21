@@ -19,6 +19,15 @@ import { useRouter } from "next/navigation";
 import { projectSchema } from "@/consts/schemas";
 import { Project } from "@prisma/client";
 import { User } from "@supabase/supabase-js";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "../ui/dialog";
+import { Edit, Plus } from "lucide-react";
 
 interface Props {
   user?: User;
@@ -38,7 +47,7 @@ export default function ProjectForm({ user, project }: Props) {
     },
   });
 
-  const onSubmit = async (values: z.infer<typeof projectSchema>) => {    
+  const onSubmit = async (values: z.infer<typeof projectSchema>) => {
     try {
       if (project) {
         const updatedProject = await updateProject(project.id, values);
@@ -67,40 +76,65 @@ export default function ProjectForm({ user, project }: Props) {
   };
 
   return (
-    <Form {...form}>
-      <form className="w-full" onSubmit={form.handleSubmit(onSubmit)}>
-        <CardContent className="flex flex-col gap-4 w-11/12 mx-auto">
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Project Name</FormLabel>
-                <Input {...field} />
-                <FormMessage className="form-message" />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="description"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Project Description</FormLabel>
-                <Input {...field} />
-                <FormMessage className="form-message" />
-              </FormItem>
-            )}
-          />
-          <Button
-            disabled={loading}
-            className="text-secondary-foreground"
-            type="submit"
-          >
-            {project ? "Update Project" : "Create Project"}
-          </Button>
-        </CardContent>
-      </form>
-    </Form>
+    <Dialog >
+      <DialogTrigger asChild>
+        {project ? (
+          <button className="flex px-2 pt-1 items-center">
+            <Edit className="mr-2 h-4 w-4" />
+            <span>Edit</span>
+          </button>
+        ) : (
+          <button className="w-full hover:bg-muted h-fit p-2 justify-start items-center rounded-md flex gap-2">
+            <Plus className="size-4" />
+            <span>Create Project</span>
+          </button>
+        )}
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>
+            {project ? "Edit Project" : "Create Project"}
+          </DialogTitle>
+          <DialogDescription>
+            {project ? "" : "Create Project"}
+          </DialogDescription>
+        </DialogHeader>
+        <Form {...form}>
+          <form className="w-full" onSubmit={form.handleSubmit(onSubmit)}>
+            <CardContent className="flex flex-col gap-4 w-11/12 mx-auto">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Project Name</FormLabel>
+                    <Input {...field} />
+                    <FormMessage className="form-message" />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Project Description</FormLabel>
+                    <Input {...field} />
+                    <FormMessage className="form-message" />
+                  </FormItem>
+                )}
+              />
+              <Button
+                disabled={loading}
+                className="text-secondary-foreground"
+                type="submit"
+              >
+                {project ? "Update Project" : "Create Project"}
+              </Button>
+            </CardContent>
+          </form>
+        </Form>
+      </DialogContent>
+    </Dialog>
   );
 }

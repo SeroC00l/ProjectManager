@@ -65,7 +65,7 @@ export function MainMenu({ user }: any) {
           <AvatarFallback>{initials}</AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56 p-0">
+      <DropdownMenuContent className="w-56 p-0 mr-3 mt-3">
         <DropdownMenuItem>
           <Avatar className="cursor-pointer size-8">
             <AvatarImage src={imageUrl} alt="@shadcn" />

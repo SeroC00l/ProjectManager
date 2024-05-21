@@ -1,10 +1,9 @@
 "use client";
-import { Home, Plus } from "lucide-react";
+import { Home } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Separator } from "@/components/ui/separator";
 import { Project } from "@prisma/client";
-import { Modal } from "./Modals";
 import ProjectForm from "./Forms/project-form";
 import { ProjectOptions } from "./project-options";
 
@@ -29,7 +28,7 @@ export const Sidebar = ({ projects, user }: any) => {
           <Link
             href={`/${project.id}`}
             key={project.id}
-            className={`w-full h-fit p-2 rounded-md flex gap-2 items-center ${
+            className={`w-full h-fit p-2 hover:bg-muted rounded-md flex gap-2 items-center ${
               pathname === `/${project.id}` &&
               "bg-primary text-secondary-foreground"
             }`}
@@ -40,19 +39,13 @@ export const Sidebar = ({ projects, user }: any) => {
                 ? `${project.name.substring(0, 10)}...`
                 : project.name}
             </span>
-            <ProjectOptions form={<ProjectForm project={project} user={user} />} />
+            <ProjectOptions
+              form={<ProjectForm project={project} user={user} />}
+            />
           </Link>
         ))}
-        <Modal
-          title="Create Project"
-          description="Start creating your first project"
-          form={<ProjectForm user={user} />}
-        >
-          <button className="w-full hover:bg-muted h-fit p-2 justify-start items-center rounded-md flex gap-2">
-            <Plus className="size-4" />
-            <span>Create Project</span>
-          </button>
-        </Modal>
+
+        <ProjectForm user={user} />
       </ul>
     </nav>
   );
