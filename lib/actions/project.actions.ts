@@ -1,14 +1,20 @@
 "use server";
-import { Project } from "@prisma/client";
-import prisma from "../prisma";
+import { projects } from "@/lib/db/schema";
+import { db } from "@/lib/db";
 import { User } from "@supabase/supabase-js";
+import { v4 as uuidv4 } from "uuid";
+import { eq } from "drizzle-orm";
 
-export async function createProject(data: any): Promise<Project> {
+export async function createProject(data: any): Promise<any> {
   try {
-    const newProject = await prisma.project.create({
-      data,
-    });
-
+    const currentDate = new Date();
+    const newProject = {
+      id: uuidv4(),
+      ...data,
+      createdAt: currentDate,
+      updatedAt: currentDate,
+    };
+    await db.insert(projects).values(newProject);
     return newProject;
   } catch (error) {
     throw new Error(`Error creating project: ${error}`);
@@ -17,25 +23,24 @@ export async function createProject(data: any): Promise<Project> {
 
 export async function getUserProjects(owner: User) {
   try {
-    const projects = await prisma.project.findMany({
-      where: {
-        owner: owner.id,
-      },
-    });
-    return projects;
+    const projectsList = await db
+      .select()
+      .from(projects)
+      .where(eq(projects.owner, owner.id));
+    return projectsList;
   } catch (error) {
     throw new Error(`Error fetching user projects: ${error}`);
   }
 }
 
-export async function getProjectById(id: string): Promise<Project | null> {
+export async function getProjectById(id: string): Promise<any | null> {
   try {
-    const project = await prisma.project.findUnique({
-      where: {
-        id,
-      },
-    });
-    return project;
+    const project = await db
+      .select()
+      .from(projects)
+      .where(eq(projects.id, id))
+      .limit(1);
+    return project[0] || null;
   } catch (error) {
     throw new Error(`Error fetching project by ID: ${error}`);
   }
@@ -43,22 +48,26 @@ export async function getProjectById(id: string): Promise<Project | null> {
 
 export async function updateProject(id: string, data: any) {
   try {
-    const updatedProject = await prisma.project.update({
-      where: { id },
-      data,
-    });
+    const currentDate = new Date();
+    const updatedProject = {
+      ...data,
+      id: id,
+      updatedAt: currentDate,
+    };
+    await db.update(projects).set(updatedProject).where(eq(projects.id, id));
     return updatedProject;
   } catch (error) {
     throw new Error(`Error updating project: ${error}`);
   }
 }
 
-export async function deleteProject(id: string): Promise<Project | null> {
+export async function deleteProject(id: string): Promise<any | null> {
   try {
-    const deletedProject = await prisma.project.delete({
-      where: { id },
-    });
-    return deletedProject;
+    const deletedProject = await db
+      .delete(projects)
+      .where(eq(projects.id, id))
+      .returning();
+    return deletedProject[0] || null;
   } catch (error) {
     throw new Error(`Error deleting project: ${error}`);
   }

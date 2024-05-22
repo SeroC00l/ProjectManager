@@ -28,6 +28,7 @@ import {
   DialogTrigger,
 } from "../ui/dialog";
 import { Edit, Plus } from "lucide-react";
+import { revalidatePath } from "next/cache";
 
 interface Props {
   user?: User;
@@ -51,9 +52,10 @@ export default function ProjectForm({ user, project }: Props) {
     try {
       if (project) {
         const updatedProject = await updateProject(project.id, values);
-        router.push(`/${updatedProject?.id}`);
+        revalidatePath(`/${updatedProject?.id}`);
         toast({
           title: "Success",
+          duration: 2000,
           description: "Project updated successfully",
         });
       } else {
@@ -61,6 +63,7 @@ export default function ProjectForm({ user, project }: Props) {
         router.push(`/${newProject?.id}`);
         toast({
           title: "Success",
+          duration: 2000,
           description: "Project created successfully",
         });
       }
@@ -68,6 +71,7 @@ export default function ProjectForm({ user, project }: Props) {
       console.error("Error creating/updating project:", error);
       toast({
         title: "Error",
+        duration: 2000,
         description: "Failed to create/update project",
       });
     } finally {
