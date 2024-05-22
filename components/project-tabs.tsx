@@ -1,9 +1,9 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Calendar, Columns2, List, ListChecks } from "lucide-react";
 import { Card, CardContent, CardHeader } from "./ui/card";
-import { Task } from "@prisma/client";
+import { Project, Task } from "@/type";
 
-export function ProjectTabs({ project }: any) {
+export function ProjectTabs({ project } : { project: Project }) {
   return (
     <Tabs defaultValue="overview" className="w-full">
       <header className="w-full border-b">
@@ -33,11 +33,7 @@ export function ProjectTabs({ project }: any) {
             <h4>Tasks</h4>
           </CardHeader>
           <CardContent>
-            <ol>
-              {project?.tasks?.map((task:Task) => (
-                <li>{task.name}</li>                    
-              ))}
-            </ol>
+        
           </CardContent>
         </Card>
         <Card className="flex min-w-[400px] min-h-[400px] p-5">Calendar</Card>
