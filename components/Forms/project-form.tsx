@@ -17,7 +17,6 @@ import { useToast } from "@/components/ui/use-toast";
 import { createProject, updateProject } from "@/lib/actions/project.actions";
 import { useRouter } from "next/navigation";
 import { projectSchema } from "@/consts/schemas";
-import { Project } from "@prisma/client";
 import { User } from "@supabase/supabase-js";
 import {
   Dialog,
@@ -29,6 +28,7 @@ import {
 } from "../ui/dialog";
 import { Edit, Plus } from "lucide-react";
 import { revalidatePath } from "next/cache";
+import { Project } from "@/type";
 
 interface Props {
   user?: User;

@@ -4,8 +4,9 @@ import { db } from "@/lib/db";
 import { User } from "@supabase/supabase-js";
 import { v4 as uuidv4 } from "uuid";
 import { eq } from "drizzle-orm";
+import { Project } from "@/type";
 
-export async function createProject(data: any): Promise<any> {
+export async function createProject(data: any): Promise<Project | null> {
   try {
     const currentDate = new Date();
     const newProject = {
