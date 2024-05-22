@@ -3,11 +3,17 @@ import { Home } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Separator } from "@/components/ui/separator";
-import { Project } from "@prisma/client";
 import ProjectForm from "./Forms/project-form";
 import { ProjectOptions } from "./project-options";
+import { Project } from "@/type";
+import { User } from "@supabase/supabase-js";
 
-export const Sidebar = ({ projects, user }: any) => {
+interface Props {
+  projects: Project[];
+  user: User;
+}
+
+export const Sidebar = ({ projects, user }: Props) => {
   const pathname = usePathname();
 
   return (
