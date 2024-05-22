@@ -8,7 +8,7 @@ export interface ModalProps {
 export type Project = {
   id: string;
   name: string;
-  description?: string;
+  description?: string | null;
   createdAt?: Date;
   updatedAt?: Date;
   owner?: string;
@@ -17,7 +17,7 @@ export type Project = {
 export type Task = {
   id: string;
   name: string;
-  description?: string;
+  description?: string | null;
   status: string;
   createdAt: Date;
   updatedAt: Date;
