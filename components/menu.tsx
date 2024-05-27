@@ -10,7 +10,6 @@ import {
   Moon,
   PlusCircle,
   Settings,
-  User,
   UserPlus,
   Users,
 } from "lucide-react";
@@ -31,18 +30,22 @@ import {
 import { logout } from "@/lib/actions/user.actions";
 import { toast } from "./ui/use-toast";
 import Link from "next/link";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { SwitchMode } from "./theme-toggle";
+import { User } from "@supabase/supabase-js";
+import { ProfileSheet } from "./Sheets/profile-sheet";
+import UserAvatar from "./user-avatar";
 
-export function MainMenu({ user }: any) {
-  const imageUrl = user?.user_metadata?.avatar_url;
+interface Props {
+  user: User;
+}
+
+export const MainMenu = ({ user }: Props) => {
   const name = user?.user_metadata?.name;
-  const initials = name
-    ?.split(" ")
-    .map((part: string) => part[0])
-    .join("");
 
   const handleLogout = async () => {
+    if (!window.confirm("Are you sure you want to log out?")) {
+      return;
+    }
     try {
       await logout();
       toast({
@@ -59,26 +62,18 @@ export function MainMenu({ user }: any) {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Avatar className="cursor-pointer size-8">
-          <AvatarImage src={imageUrl} alt="@shadcn" />
-          <AvatarFallback>{initials}</AvatarFallback>
-        </Avatar>
+      <DropdownMenuTrigger className="select-none focus:outline-none">
+        <UserAvatar user={user} className="cursor-pointer size-8" />
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56 p-0 mr-3 mt-3">
         <DropdownMenuItem>
-          <Avatar className="cursor-pointer size-8">
-            <AvatarImage src={imageUrl} alt="@shadcn" />
-            <AvatarFallback>{initials}</AvatarFallback>
-          </Avatar>
+          <UserAvatar user={user} className="cursor-pointer size-8" />
           <DropdownMenuLabel>{name}</DropdownMenuLabel>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem>
-            <User className="mr-2 h-4 w-4" />
-            <span>Profile</span>
-            <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
+          <DropdownMenuItem asChild>
+            <ProfileSheet user={user} />
           </DropdownMenuItem>
           <DropdownMenuItem>
             <Settings className="mr-2 h-4 w-4" />
@@ -121,7 +116,7 @@ export function MainMenu({ user }: any) {
             </DropdownMenuPortal>
           </DropdownMenuSub>
           <DropdownMenuItem>
-            <Moon className="size-4 mr-2"/>
+            <Moon className="size-4 mr-2" />
             <span className="mr-16">Dark theme</span>
             <SwitchMode />
           </DropdownMenuItem>
@@ -146,14 +141,12 @@ export function MainMenu({ user }: any) {
           <span>API</span>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
-          <button onClick={handleLogout} className="flex w-full">
-            <LogOut className="mr-2 h-4 w-4" />
-            <span>Log out</span>
-            <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
-          </button>
+        <DropdownMenuItem onClick={handleLogout}>
+          <LogOut className="mr-2 h-4 w-4" />
+          <span>Log out</span>
+          <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
-}
+};

@@ -10,7 +10,7 @@ export default async function ProjectPage({
 
   return (
     <section className="size-full">
-      <header className="border-b w-full p-5">
+      <header className="border-b p-5">
         {project?.name}
       </header>
       <ProjectTabs project={project} />

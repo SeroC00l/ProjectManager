@@ -14,12 +14,22 @@ export type Project = {
   owner?: string;
 };
 
+export type TaskStatus = {
+  id: string;
+  name: string;
+  color?: string;
+  projectId: string;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
 export type Task = {
   id: string;
   name: string;
   description?: string | null;
-  status: string;
+  status: TaskStatus;
   createdAt: Date;
   updatedAt: Date;
   projectId: string;
 };
+

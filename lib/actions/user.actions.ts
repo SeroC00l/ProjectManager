@@ -8,6 +8,7 @@ import {
   Provider,
   SignInWithPasswordCredentials,
   SignUpWithPasswordCredentials,
+  User,
 } from "@supabase/supabase-js";
 
 export async function login(values: SignInWithPasswordCredentials) {
@@ -60,3 +61,54 @@ export async function logout() {
   }
   return redirect("/login");
 }
+
+export const updateUserAvatar = async (imageUrl: string) => {
+  try {
+    // Verificar que la URL sea válida
+    new URL(imageUrl);
+    const supabase = createClient();
+    const { data: updateData, error: updateError } =
+      await supabase.auth.updateUser({
+        data: { user_metadata: { avatar_url: imageUrl } },
+      });
+
+    if (updateError) {
+      throw updateError;
+    }
+    revalidatePath("/", "layout");
+    return updateData.user;
+  } catch (error) {
+    console.error("Error updating user avatar:", error);
+    throw new Error("Error updating user avatar: Invalid URL format");
+  }
+};
+
+export const updateUserBanner = async (imageUrl: string) => {
+  const supabase = createClient();
+
+  const { data: updateData, error: updateError } =
+    await supabase.auth.updateUser({
+      data: { banner_url: imageUrl },
+    });
+
+  if (updateError) {
+    throw updateError;
+  }
+
+  return updateData.user;
+};
+
+export const updateUserData = async (data: any) => {
+  const supabase = createClient();
+
+  const { data: updateData, error: updateError } =
+    await supabase.auth.updateUser({
+      data,
+    });
+
+  if (updateError) {
+    throw updateError;
+  }
+
+  return updateData.user;
+};

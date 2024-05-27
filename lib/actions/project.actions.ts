@@ -5,6 +5,7 @@ import { User } from "@supabase/supabase-js";
 import { v4 as uuidv4 } from "uuid";
 import { eq } from "drizzle-orm";
 import { Project } from "@/type";
+import { revalidatePath } from "next/cache";
 
 export async function createProject(data: any): Promise<Project | null> {
   try {
@@ -16,6 +17,7 @@ export async function createProject(data: any): Promise<Project | null> {
       updatedAt: currentDate,
     };
     await db.insert(projects).values(newProject);
+    revalidatePath("/");
     return newProject;
   } catch (error) {
     throw new Error(`Error creating project: ${error}`);
@@ -56,6 +58,7 @@ export async function updateProject(id: string, data: any) {
       updatedAt: currentDate,
     };
     await db.update(projects).set(updatedProject).where(eq(projects.id, id));
+    revalidatePath("/");
     return updatedProject;
   } catch (error) {
     throw new Error(`Error updating project: ${error}`);

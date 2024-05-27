@@ -3,10 +3,10 @@ import { Home } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Separator } from "@/components/ui/separator";
-import ProjectForm from "./Forms/project-form";
 import { ProjectOptions } from "./project-options";
 import { Project } from "@/type";
 import { User } from "@supabase/supabase-js";
+import { ProjectModal } from "./Modal/project-modal";
 
 interface Props {
   projects: Project[];
@@ -28,15 +28,15 @@ export const Sidebar = ({ projects, user }: Props) => {
         </Link>
       </ul>
       <Separator />
-      <h3 className="p-2">Projects</h3>
+      <h3 className="px-3 py-1 ml-2">My Projects</h3>
       <ul className="p-3">
         {projects.map((project: Project) => (
           <Link
             href={`/${project.id}`}
             key={project.id}
-            className={`w-full h-fit p-2 hover:bg-muted rounded-md flex gap-2 items-center ${
+            className={`w-full h-fit p-2 rounded-md flex justify-between gap-2 items-center ${
               pathname === `/${project.id}` &&
-              "bg-primary text-secondary-foreground"
+              "bg-primary dark:text-secondary-foreground text-primary-foreground"
             }`}
           >
             <Home className="size-4" />
@@ -45,13 +45,11 @@ export const Sidebar = ({ projects, user }: Props) => {
                 ? `${project.name.substring(0, 10)}...`
                 : project.name}
             </span>
-            <ProjectOptions
-              form={<ProjectForm project={project} user={user} />}
-            />
+            <ProjectOptions project={project} user={user} />
           </Link>
         ))}
 
-        <ProjectForm user={user} />
+        <ProjectModal user={user} />
       </ul>
     </nav>
   );
