@@ -2,17 +2,15 @@
 import { projects } from "@/lib/db/schema";
 import { db } from "@/lib/db";
 import { User } from "@supabase/supabase-js";
-import { v4 as uuidv4 } from "uuid";
 import { eq } from "drizzle-orm";
-import { Project } from "@/type";
 import { revalidatePath } from "next/cache";
+import { Project, Status } from "@/type";
 
-export async function createProject(data: any): Promise<Project | null> {
+export async function createProject(project: Project): Promise<Project | null> {
   try {
     const currentDate = new Date();
     const newProject = {
-      id: uuidv4(),
-      ...data,
+      ...project,
       createdAt: currentDate,
       updatedAt: currentDate,
     };
@@ -24,7 +22,7 @@ export async function createProject(data: any): Promise<Project | null> {
   }
 }
 
-export async function getUserProjects(owner: User) {
+export async function getUserProjects(owner: User): Promise<Project[]> {
   try {
     const projectsList = await db
       .select()
@@ -36,7 +34,7 @@ export async function getUserProjects(owner: User) {
   }
 }
 
-export async function getProjectById(id: string): Promise<any | null> {
+export async function getProjectById(id: string): Promise<Project | null> {
   try {
     const project = await db
       .select()
@@ -54,18 +52,17 @@ export async function updateProject(id: string, data: any) {
     const currentDate = new Date();
     const updatedProject = {
       ...data,
-      id: id,
       updatedAt: currentDate,
     };
     await db.update(projects).set(updatedProject).where(eq(projects.id, id));
-    revalidatePath("/");
+    revalidatePath(`/${id}`, "layout");
     return updatedProject;
   } catch (error) {
     throw new Error(`Error updating project: ${error}`);
   }
 }
 
-export async function deleteProject(id: string): Promise<any | null> {
+export async function deleteProject(id: string): Promise<Project | null> {
   try {
     const deletedProject = await db
       .delete(projects)
@@ -74,5 +71,41 @@ export async function deleteProject(id: string): Promise<any | null> {
     return deletedProject[0] || null;
   } catch (error) {
     throw new Error(`Error deleting project: ${error}`);
+  }
+}
+
+export async function addProjectStatus(
+  projectId: string,
+  newStatus: Status
+): Promise<Status[]> {
+  try {
+    const project = await getProjectById(projectId);
+    if (!project) {
+      throw new Error(`Task with ID ${projectId} not found`);
+    }
+
+    const updatedStatuses = [...(project.statuses || []), newStatus];
+    await db
+      .update(projects)
+      .set({ statuses: updatedStatuses, updatedAt: new Date() })
+      .where(eq(projects.id, projectId));
+
+    revalidatePath(`/${projectId}`);
+    return updatedStatuses;
+  } catch (error) {
+    throw new Error(`Error adding task status: ${error}`);
+  }
+}
+
+export async function getProjectStatuses(projectId: string): Promise<Status[]> {
+  try {
+    const project = await getProjectById(projectId);
+    if (!project) {
+      throw new Error(`Task with ID ${projectId} not found`);
+    }
+
+    return project.statuses || [];
+  } catch (error) {
+    throw new Error(`Error fetching task statuses: ${error}`);
   }
 }

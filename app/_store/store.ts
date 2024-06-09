@@ -1,12 +1,12 @@
 import { create } from "zustand";
-import { Task, TaskStatus } from "@/type";
+import { Task, Status } from "@/type";
 
 interface BoardState {
   tasks: Task[];
-  columns: TaskStatus[];
+  columns: Status[];
   setTasks: (tasks: Task[]) => void;
-  setColumns: (columns: TaskStatus[]) => void;
-  addColumn: (column: TaskStatus) => void;
+  setColumns: (columns: Status[]) => void;
+  addColumn: (column: Status) => void;
 }
 
 export const useBoardStore = create<BoardState>((set) => ({

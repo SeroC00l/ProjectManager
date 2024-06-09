@@ -1,43 +1,20 @@
 "use server";
-import { taskStatuses, tasks } from "@/lib/db/schema";
+import { tasks } from "@/lib/db/schema";
 import { db } from "@/lib/db";
-import { and, eq } from "drizzle-orm";
-import { Task, TaskStatus } from "@/type";
+import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
+import { Task } from "@/type";
 
-export async function createTask(data: any): Promise<Task | null> {
+export async function createTask(task: Task): Promise<Task | null> {
   try {
     const currentDate = new Date();
-    const projectId = data.projectId;
-    const statusName = data.status;
-    const existingStatuses = await db
-      .select()
-      .from(taskStatuses)
-      .where(
-        and(
-          eq(taskStatuses.projectId, projectId),
-          eq(taskStatuses.name, statusName)
-        )
-      );
-    if (existingStatuses.length === 0) {
-      const newStatus = {
-        name: statusName,
-        color: data.color,
-        projectId: projectId,
-        createdAt: currentDate,
-        updatedAt: currentDate,
-      };
-      await db.insert(taskStatuses).values(newStatus).returning();
-    }
-
     const newTask = {
-      ...data,
-      status: statusName,
+      ...task,
       createdAt: currentDate,
       updatedAt: currentDate,
     };
     await db.insert(tasks).values(newTask);
-    revalidatePath(`/${newTask?.projectId}`);
+    revalidatePath(`/${newTask.projectId}`);
     return newTask;
   } catch (error) {
     throw new Error(`Error creating task: ${error}`);
@@ -51,25 +28,7 @@ export async function getProjectTasks(projectId: string): Promise<Task[]> {
       .from(tasks)
       .where(eq(tasks.projectId, projectId));
 
-    const taskStatusesList = await db
-      .select()
-      .from(taskStatuses)
-      .where(eq(taskStatuses.projectId, projectId));
-
-    const tasksWithStatus = tasksList.map((task) => {
-      const status = taskStatusesList.find(
-        (status) => status.name === task.status
-      );
-      if (!status) {
-        throw new Error(`Status not found for task ${task.id}`);
-      }
-      return {
-        ...task,
-        status: status,
-      };
-    });
-
-    return tasksWithStatus;
+    return tasksList;
   } catch (error) {
     throw new Error(`Error fetching tasks for project: ${error}`);
   }
@@ -84,40 +43,19 @@ export async function getTaskById(id: string) {
   }
 }
 
-export async function updateTask(id: string, data: any): Promise<Task | null> {
+export async function updateTask(task: Task): Promise<Task | null> {
   try {
     const currentDate = new Date();
     const updatedTask = {
-      ...data,
-      id: id,
+      ...task,
+
       updatedAt: currentDate,
     };
-    await db.update(tasks).set(updatedTask).where(eq(tasks.id, id));
-    revalidatePath(`/${updatedTask?.projectId}`);
+    await db.update(tasks).set(updatedTask).where(eq(tasks.id, task.id));
+    revalidatePath(`/${updatedTask.projectId}`);
     return updatedTask;
   } catch (error) {
     throw new Error(`Error updating task: ${error}`);
-  }
-}
-
-export async function updateTaskStatus(
-  taskId: string,
-  status: TaskStatus
-): Promise<Task | null> {
-  try {
-    const [updatedTask] = await db
-      .update(tasks)
-      .set({ status: status.name, updatedAt: new Date() })
-      .where(eq(tasks.id, taskId))
-      .returning();
-
-    revalidatePath(`/${updatedTask?.projectId}`);
-    return {
-      ...updatedTask,
-      status: status,
-    };
-  } catch (error) {
-    throw new Error(`Error updating task status: ${error}`);
   }
 }
 
@@ -127,39 +65,9 @@ export async function deleteTask(id: string) {
       .delete(tasks)
       .where(eq(tasks.id, id))
       .returning();
-    revalidatePath(`/${deletedTask?.projectId}`);
+    revalidatePath(`/${deletedTask.projectId}`);
     return deletedTask || null;
   } catch (error) {
     throw new Error(`Error deleting task: ${error}`);
-  }
-}
-
-export async function getTaskStatuses(
-  projectId: string
-): Promise<TaskStatus[]> {
-  try {
-    const taskStatusesList = await db
-      .select()
-      .from(taskStatuses)
-      .where(eq(taskStatuses.projectId, projectId));
-    return taskStatusesList;
-  } catch (error) {
-    throw new Error(`Error fetching task statuses: ${error}`);
-  }
-}
-
-export async function createTaskStatus(data: any): Promise<TaskStatus | null> {
-  try {
-    const currentDate = new Date();
-    const newTaskStatus = {
-      ...data,
-      createdAt: currentDate,
-      updatedAt: currentDate,
-    };
-    await db.insert(taskStatuses).values(newTaskStatus);
-    revalidatePath(`/${data.projectId}`);
-    return newTaskStatus;
-  } catch (error) {
-    throw new Error(`Error creating task status: ${error}`);
   }
 }
