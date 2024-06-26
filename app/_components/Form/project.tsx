@@ -1,17 +1,18 @@
 import { projectSchema } from "@/constants/schemas";
 import { User } from "@supabase/supabase-js";
-import { Form } from ".";
-import { Input } from "./input";
-import { LoadingButton } from "../Button/loading-button";
+import { Form, Input, Select } from ".";
+import { LoadingButton } from "../button/loading";
 import { useProjectForm } from "@/app/_hooks/use-project-form";
 import { Project } from "@/type";
-import { Select } from "./select";
 
 const privacyOptions = [
-  { value: "owner_only", name: "Private - Only you can access"},
-  { value: "members_only", name: "Private - Only members can access" },
-  { value: "link_only", name: "Semi private - Anyone with the link can access" },
-  { value: "public", name: "Public - Anyone can access" },
+  { value: "owner_only", label: "Private - Only you can access" },
+  { value: "members_only", label: "Private - Only members can access" },
+  {
+    value: "link_only",
+    label: "Semi private - Anyone with the link can access",
+  },
+  { value: "public", label: "Public - Anyone can access" },
 ];
 
 interface Props {
@@ -27,6 +28,13 @@ export default function ProjectForm({ user, project }: Props) {
     description: project?.description || "",
     owner: project?.owner || user?.id,
     privacy: project?.privacy || "owner_only",
+    members: project?.members || [
+      {
+        id: user?.id,
+        name: user?.user_metadata.name,
+        avatar: user?.user_metadata.avatar_url,
+      },
+    ],
   };
 
   return (
@@ -39,7 +47,11 @@ export default function ProjectForm({ user, project }: Props) {
       <Input name="name" label="Project Name" />
       <Input name="description" label="Project Description" />
       <Select name="privacy" label="Privacy Level" options={privacyOptions} />
-      <LoadingButton loading={loading} type="submit" className="text-secondary-foreground">
+      <LoadingButton
+        loading={loading}
+        type="submit"
+        className="text-secondary-foreground"
+      >
         {project ? "Update Project" : "Create Project"}
       </LoadingButton>
     </Form>

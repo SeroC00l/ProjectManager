@@ -1,5 +1,5 @@
 {
-  "id": "97d42bd6-16c6-4d23-810d-f861ed33ca73",
+  "id": "c8bfcc00-22a3-4475-9c87-2f3952d8afbf",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "6",
   "dialect": "postgresql",
@@ -172,6 +172,12 @@
           "primaryKey": false,
           "notNull": false
         },
+        "body": {
+          "name": "body",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
         "status": {
           "name": "status",
           "type": "jsonb",
@@ -195,6 +201,12 @@
           "type": "jsonb",
           "primaryKey": false,
           "notNull": false
+        },
+        "date": {
+          "name": "date",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
         },
         "created_at": {
           "name": "created_at",

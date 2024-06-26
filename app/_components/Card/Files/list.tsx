@@ -9,10 +9,10 @@ import {
 } from "../../ui/context-menu";
 import { FileItem, Project } from "@/type";
 import { useFiles } from "@/app/_hooks/use-files";
-import { FileForm } from "../../Form/file-form";
+import { FileForm } from "../../Form/file";
 import { useEffect, useState } from "react";
-import useFileStore from "./store";
 import useStore from "@/app/_store/useStore";
+import useFileStore from "@/app/_store/files";
 
 export const FileList = ({ project }: { project: Project }) => {
   const { navigateToFolder, handleDownload, handleDelete } = useFiles(project);

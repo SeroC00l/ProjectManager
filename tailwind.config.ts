@@ -3,6 +3,7 @@ import { fontFamily } from "tailwindcss/defaultTheme";
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
+  plugins: [require("@tailwindcss/typography")],
   darkMode: ["class"],
   content: [
     "./pages/**/*.{ts,tsx}",

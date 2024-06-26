@@ -6,22 +6,19 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "../ui/sheet";
-import { DropdownMenuShortcut } from "../ui/dropdown-menu";
 import UserAvatar from "../user-avatar";
 import { Provider, User } from "@supabase/supabase-js";
-import { PhotoViewer } from "../Modal/photo-viewer";
+import { PhotoViewer } from "../modal/photo-viewer";
 import { Button } from "../ui/button";
 import { updateUserAvatar, updateUserData } from "@/lib/actions/user.actions";
 import { toast } from "../ui/use-toast";
 import { Label } from "../ui/label";
-import Image from "next/image";
 import { uploadFile } from "@/lib/actions/file.actions";
-import { Form } from "../Form";
-import { Textarea } from "../Form/text-area";
+import { Form, Input, Textarea } from "../Form";
 import { profileSchema } from "@/constants/schemas";
-import { Input } from "../Form/input";
 import { z } from "zod";
-import { UserIcon } from "lucide-react";
+import { DropdownMenuLabel } from "@radix-ui/react-dropdown-menu";
+import { useFormContext } from "react-hook-form";
 
 const providerIconMap: { [key: string]: React.ElementType } = {
   github: Icons.FaGithub,
@@ -32,8 +29,6 @@ const providerIconMap: { [key: string]: React.ElementType } = {
 };
 
 export const ProfileSheet = ({ user }: { user: User }) => {
-  console.log(user);
-
   const handleSubmit = async (values: z.infer<typeof profileSchema>) => {
     try {
       const updatedUser = await updateUserData(values);
@@ -97,12 +92,13 @@ export const ProfileSheet = ({ user }: { user: User }) => {
     );
   };
 
+  console.log();
+
   return (
     <Sheet>
-      <SheetTrigger className="flex px-2 py-1 hover:bg-muted justify-start m-0 items-center w-full text-sm">
-        <UserIcon className="mr-2 size-4" />
-        Edit profile
-        <DropdownMenuShortcut>⇧⌘p</DropdownMenuShortcut>
+      <SheetTrigger className="flex px-2 py-1 gap-2 hover:bg-muted justify-start m-0 items-center w-full text-sm">
+        <UserAvatar user={user} className="cursor-pointer size-8" />
+        <DropdownMenuLabel>{user.user_metadata?.name}</DropdownMenuLabel>
       </SheetTrigger>
       <SheetContent className="p-0 w-[700px] border-0">
         <SheetHeader className="mb-10">
@@ -156,6 +152,7 @@ export const ProfileSheet = ({ user }: { user: User }) => {
             className="cursor-pointer w-full border-none resize-none"
             placeholder="Write your description here"
           />
+
           <Button
             variant="default"
             className="w-fit mx-auto text-primary-foreground dark:text-secondary-foreground hidden group-focus-within:block"

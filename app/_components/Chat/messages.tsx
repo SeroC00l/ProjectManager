@@ -3,7 +3,7 @@ import UserAvatar from "../user-avatar";
 import styles from "./style.module.css";
 import { message } from "@/type";
 import { User } from "@supabase/supabase-js";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { ScrollArea } from "@/app/_components/ui/scroll-area";
 
 interface Props {
   messages: message[];

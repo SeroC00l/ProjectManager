@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { useToast } from "@/app/_components/ui/use-toast";
 import { Task } from "@/type";
-import { closeModal } from "@/app/_components/Modal";
+import { closeModal } from "@/app/_components/modal";
 import { createTask, updateTask } from "@/lib/actions/task.actions";
 
 export const useTaskForm = (initialTask?: Task) => {
@@ -29,7 +29,6 @@ export const useTaskForm = (initialTask?: Task) => {
       }
       closeModal();
     } catch (error) {
-      console.error("Error creating/updating task:", error);
       toast({
         title: "Error",
         duration: 2000,

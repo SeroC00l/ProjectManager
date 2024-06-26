@@ -8,7 +8,7 @@ import {
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
+} from "@/app/_components/ui/tooltip";
 import { FaMicrophone } from "react-icons/fa";
 
 export const Call = () => {
@@ -61,3 +61,4 @@ export const Call = () => {
     </>
   );
 };
+

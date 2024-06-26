@@ -32,7 +32,7 @@ import { toast } from "./ui/use-toast";
 import Link from "next/link";
 import { SwitchMode } from "./theme-toggle";
 import { User } from "@supabase/supabase-js";
-import { ProfileSheet } from "./Sheets/profile-sheet";
+import { ProfileSheet } from "./sheet/profile";
 import UserAvatar from "./user-avatar";
 
 interface Props {
@@ -66,15 +66,11 @@ export const MainMenu = ({ user }: Props) => {
         <UserAvatar user={user} className="cursor-pointer size-8" />
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56 p-0 mr-3 mt-3">
-        <DropdownMenuItem>
-          <UserAvatar user={user} className="cursor-pointer size-8" />
-          <DropdownMenuLabel>{name}</DropdownMenuLabel>
+        <DropdownMenuItem asChild> 
+          <ProfileSheet user={user} />
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem asChild>
-            <ProfileSheet user={user} />
-          </DropdownMenuItem>
           <DropdownMenuItem>
             <Settings className="mr-2 h-4 w-4" />
             <span>Settings</span>

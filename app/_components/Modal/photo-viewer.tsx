@@ -1,10 +1,11 @@
 "use client";
 import React, { useState } from "react";
-import { Modal } from ".";
 import Image from "next/image";
 import { toast } from "../ui/use-toast";
-import { Button } from "../ui/button";
+import { LoadingButton } from "../button/loading"; 
 import { Upload } from "lucide-react";
+import { Button } from "../ui/button";
+import { Modal } from ".";
 
 interface Props {
   initialImageUrl?: string;
@@ -23,6 +24,7 @@ export const PhotoViewer = ({
 }: Props) => {
   const [file, setFile] = useState<File | null>(null);
   const [imageUrl, setImageUrl] = useState<string>(initialImageUrl || "");
+  const [Loading, setLoading] = useState(false);
 
   const triggerFileInput = () => {
     const fileInput = document.querySelector<HTMLInputElement>("#avatar-input");
@@ -43,6 +45,7 @@ export const PhotoViewer = ({
       if (!file) {
         throw new Error("No file selected");
       }
+      setLoading(true);
       await onSave(file);
       toast({
         title: "Success",
@@ -56,6 +59,8 @@ export const PhotoViewer = ({
         duration: 2000,
         description: "There was an error saving the image.",
       });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -68,13 +73,14 @@ export const PhotoViewer = ({
         alt={alt}
         className="rounded-lg"
       />
-      <Button
+      <LoadingButton
         onClick={handleSaveImage}
+        loading={Loading}
         variant="default"
         className="w-full text-primary-foreground dark:text-secondary-foreground"
       >
         Save Image
-      </Button>
+      </LoadingButton>
 
       <input
         id="avatar-input"

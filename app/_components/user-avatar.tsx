@@ -1,25 +1,25 @@
 import React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { User } from "@supabase/supabase-js";
-import { Sender } from "@/type";
+import { Member, Sender } from "@/type";
 import { AvatarProps } from "@radix-ui/react-avatar";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
+} from "@/app/_components/ui/tooltip";
 
 interface Props extends AvatarProps {
-  user: User | Sender;
+  user: User | Sender | Member;
 }
 
-const UserAvatar = ({ user, ...props }: Props) => {
+const UserAvatar = ({ user, className, ...props }: Props) => {
   const imageUrl =
     (user as User)?.user_metadata?.avatar_url || (user as Sender)?.avatarUrl;
   const name =
     (user as User)?.user_metadata?.name ||
-    (user as Sender)?.name ||
+    (user as Sender | Member)?.name ||
     "No User Name";
   const splitName = name.split(" ");
   let initials = "";
@@ -29,14 +29,16 @@ const UserAvatar = ({ user, ...props }: Props) => {
   } else {
     initials = name.slice(0, 2);
   }
-  
+
+  const sizeClassName = className?.split(" ").find(cls => cls.startsWith("size-")) || "";
+
   return (
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-          <Avatar {...props}>
+          <Avatar {...props} className={className}>
             <AvatarImage src={imageUrl} alt="@shadcn" />
-            <AvatarFallback>{initials.toUpperCase()}</AvatarFallback>
+            <AvatarFallback className={`${sizeClassName} text-xs`}>{initials.toUpperCase()}</AvatarFallback>
           </Avatar>
         </TooltipTrigger>
         <TooltipContent>{name}</TooltipContent>
@@ -45,4 +47,4 @@ const UserAvatar = ({ user, ...props }: Props) => {
   );
 };
 
-export default UserAvatar;
+export default UserAvatar

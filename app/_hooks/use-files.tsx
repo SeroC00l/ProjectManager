@@ -1,5 +1,4 @@
 "use client";
-import useFileStore from "@/app/_components/Card/Files/store";
 import { updateProject } from "@/lib/actions/project.actions";
 import { uploadFile, deleteFile } from "@/lib/actions/file.actions";
 import { FileItem, Project } from "@/type";
@@ -10,6 +9,7 @@ import { toast } from "../_components/ui/use-toast";
 import { useParams } from "next/navigation";
 import { saveAs } from "file-saver";
 import JSZip from "jszip";
+import useFileStore from "../_store/files";
 
 export const useFiles = (project?: Project) => {
   const {

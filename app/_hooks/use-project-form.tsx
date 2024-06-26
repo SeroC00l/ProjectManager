@@ -1,9 +1,14 @@
 "use client";
 import { useState } from "react";
 import { useToast } from "@/app/_components/ui/use-toast";
-import { createProject, updateProject } from "@/lib/actions/project.actions";
+import {
+  createProject,
+  deleteProject,
+  updateProject,
+} from "@/lib/actions/project.actions";
 import { Project } from "@/type";
-import { closeModal } from "@/app/_components/Modal";
+import { closeModal } from "@/app/_components/modal";
+import { revalidatePath } from "next/cache";
 
 export const useProjectForm = (initialProject?: Project) => {
   const { toast } = useToast();
@@ -39,5 +44,25 @@ export const useProjectForm = (initialProject?: Project) => {
     }
   };
 
-  return { loading, onSubmit };
+  const handleDelete = async () => {
+    if (!initialProject) return;
+    try {
+      await deleteProject(initialProject.id);
+      toast({
+        title: "Success",
+        duration: 2000,
+        description: "Project deleted successfully",
+      });
+      revalidatePath("/projects");
+    } catch (error) {
+      toast({
+        title: "Error",
+        duration: 2000,
+        description: "Failed to delete project",
+      });
+    }
+  };
+
+
+  return { loading, onSubmit, handleDelete };
 };

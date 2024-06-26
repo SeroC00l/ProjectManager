@@ -14,11 +14,8 @@ export interface Status {
   name: string;
   color: string;
 }
-export interface Subtask {
-  title: string;
-  description?: string;
-  status: Status;
-}
+export interface Icon extends Status {}
+export interface Subtask extends Task {}
 export interface FileItem {
   parent?: FileItem;
   name: string;
@@ -28,10 +25,15 @@ export interface FileItem {
 }
 export interface metadata {
   files?: FileItem[];
+  icon?: Icon;
 }
 
-export interface Sender {
+interface User {
   name: string;
   id: string;
   avatarUrl: string;
 }
+
+export interface Sender extends User {}
+
+export interface Member extends User {}

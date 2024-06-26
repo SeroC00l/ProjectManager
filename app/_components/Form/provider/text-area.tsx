@@ -1,6 +1,11 @@
 import { useFormContext } from "react-hook-form";
-import { FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
-import { Textarea as Textareax } from "../ui/textarea";
+import {
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/app/_components/ui/form";
+import { Textarea as CnTextarea } from "@/app/_components/ui/textarea";
 
 interface Props extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   name: string;
@@ -15,7 +20,7 @@ export const Textarea = ({ name, label, ...props }: Props) => {
       render={({ field }) => (
         <FormItem>
           {label && <FormLabel>{label}</FormLabel>}
-          <Textareax {...field} {...props}  />
+          <CnTextarea {...field} {...props} />
           <FormMessage className="form-message" />
         </FormItem>
       )}

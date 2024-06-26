@@ -16,10 +16,10 @@ import {
 import { Project } from "@/type";
 import { FileList } from "./list";
 import { useFiles } from "@/app/_hooks/use-files";
-import { FileForm } from "../../Form/file-form";
-import useFileStore from "./store";
+import { FileForm } from "../../Form/file";
 import { useStore } from "zustand";
 import { useEffect, useState } from "react";
+import useFileStore from "@/app/_store/files";
 
 export const FilesCard = ({ project }: { project: Project }) => {
   const { handleUploadFile, navigateToBreadcrumb } = useFiles(project);

@@ -1,7 +1,6 @@
 "use client";
-import { Form } from ".";
+import { Form, Input } from ".";
 import { FileItem } from "@/type";
-import { Input } from "./input";
 import { folderSchema } from "@/constants/schemas";
 import { useFiles } from "@/app/_hooks/use-files";
 import { z } from "zod";
@@ -37,9 +36,7 @@ export const FileForm = ({ file, callback }: Props) => {
       onSubmit={handleSubmit}
     >
       <Input name="folderName" label="Folder Name" />
-      <Button
-        className="dark:text-secondary-foreground"
-      >
+      <Button className="dark:text-secondary-foreground">
         {file ? "Rename" : "Create"}
       </Button>
     </Form>

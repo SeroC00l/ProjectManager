@@ -6,16 +6,19 @@ import {
   CardHeader,
   CardTitle,
 } from "@/app/_components/ui/card";
-import { Input } from "./input";
 import { FaGithub, FaGoogle } from "react-icons/fa";
 import Link from "next/link";
 import { useAuthForm } from "@/app/_hooks/use-auth-form";
-import { Form } from ".";
+import { Form, Input } from ".";
 import { authSchema } from "@/constants/schemas";
-import { LoadingButton } from "../Button/loading-button";
+import { LoadingButton } from "../button/loading";
 import { Label } from "../ui/label";
 
-export default function AuthForm({ type }: { type: "login" | "register" }) {
+interface Props {
+  type: "login" | "register";
+}
+
+export default function AuthForm({ type }: Props) {
   const isLogin = type === "login";
   const { loading, defaultValues, onSubmit, handleOAuth } =
     useAuthForm(isLogin);
@@ -27,7 +30,7 @@ export default function AuthForm({ type }: { type: "login" | "register" }) {
       </CardHeader>
       <CardContent className="flex flex-col gap-4 w-11/12 mx-auto">
         <Form
-        className="flex flex-col gap-4 w-11/12 mx-auto"
+          className="flex flex-col gap-4 w-11/12 mx-auto"
           schema={authSchema}
           onSubmit={onSubmit}
           defaultValues={defaultValues}

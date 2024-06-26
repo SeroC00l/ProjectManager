@@ -1,6 +1,8 @@
+"use client"
 import { ListChecks } from "lucide-react";
 import { Card, CardContent, CardHeader } from "../ui/card";
 import { Task } from "@/type";
+import { IconForm } from "../Form/icon";
 
 export const TasksCard = ({ tasks }: { tasks: Task[] }) => {
   return (
@@ -13,15 +15,20 @@ export const TasksCard = ({ tasks }: { tasks: Task[] }) => {
         {tasks?.map((task) => (
           <div className="flex justify-between items-center" key={task.id}>
             <div className="flex items-center gap-2">
-              <div className="h-4 w-4 rounded-full bg-primary-foreground"></div>
               <span>{task.name}</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="h-4 w-4 rounded-full bg-primary-foreground"></div>
               <span>{task.status.name}</span>
+              <span
+                style={{ background: task.status.color }}
+                className="size-4 rounded-full"
+              />
             </div>
           </div>
         ))}
+
+        <IconForm 
+        />
       </CardContent>
     </Card>
   );

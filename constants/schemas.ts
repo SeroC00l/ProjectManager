@@ -8,18 +8,15 @@ export const authSchema = z.object({
   name: z.string().optional(),
 });
 export const statusSchema = z.object({
-  name: z.string().min(3, "Status name must be at least 3 characters"),
+  name: z
+    .string()
+    .min(3, "Status name must be at least 3 characters")
+    .max(20, "Status name must be less than 20 characters"),
   color: z.string(),
 });
 export const profileSchema = z.object({
   name: z.string().optional(),
   description: z.string().optional(),
-});
-export const subtaskSchema = z.object({
-  title: z.string().min(3, "Subtask title must be at least 3 characters"),
-  description: z.string().optional(),
-  status: statusSchema,
-  assignedTo: z.array(z.string()),
 });
 export const folderSchema = z.object({
   folderName: z.string().min(3, "Folder name must be at least 3 characters"),
@@ -31,8 +28,13 @@ export const fileSchema = z.object({
 export const projectSchema = createInsertSchema(projects);
 export const taskSchema = createInsertSchema(tasks, {
   status: statusSchema,
-  subtasks: z.array(subtaskSchema),
+});
+export const subtaskSchema = taskSchema.omit({
+  projectId: true,
+  subtasks: true,
 });
 export const messageSchema = createInsertSchema(messages, {
   text: z.string().max(1000, "Message must be less than 1000 characters"),
 });
+export const bodySchema = z.object({ body: taskSchema.shape.body });
+export const iconSchema = z.object({ name: z.string(), background: z.string()});

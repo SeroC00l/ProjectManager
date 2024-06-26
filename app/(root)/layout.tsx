@@ -14,7 +14,7 @@ export default async function HomeLayout({ children }: { children: string }) {
   return (
     <>
       <Header user={user} />
-      <main id="main" className="flex h-[calc(100vh-56px)]">
+      <main id="main" className="flex h-[calc(100vh-56px)] w-full overflow-hidden">
         <Sidebar projects={projects} user={user} />
         {children}
       </main>

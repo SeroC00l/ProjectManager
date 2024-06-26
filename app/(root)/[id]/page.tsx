@@ -11,18 +11,18 @@ export default async function ProjectPage({
 }) {
   const project = await getProjectById(params?.id);
   const user = await getSession();
-  if(!user) redirect("/login");
+  if (!user) redirect("/login");
   if (!project) {
     return (
       <section className="size-full">
-        <header className="border-b p-5">
-          Project not found
-        </header>
+        <header className="border-b p-5">Project not found</header>
       </section>
     );
   }
   const isOwner = project.owner === user?.id;
-  const isMember = project.members?.includes(user?.id || "");
+  const isMember = project?.members
+    ?.map((member) => member.id)
+    .includes(user?.id);
   const canAccessProject =
     project.privacy === "public" ||
     (project.privacy === "link_only" && user) ||
@@ -38,12 +38,11 @@ export default async function ProjectPage({
     );
   }
   return (
-    <section className="size-full">
+    <section className="h-full w-[calc(-200px+100vw)]">
       <header className="border-b p-5">
         {project.name} - {project.description}
       </header>
       <ProjectTabs project={project} />
-      <Chat project={project} user={user} />
     </section>
   );
 }

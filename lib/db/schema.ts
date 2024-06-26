@@ -7,7 +7,7 @@ import {
   pgEnum,
 } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
-import { Status, Subtask, metadata, sender } from "@/type";
+import { Member, Status, Subtask, metadata, Sender } from "@/type";
 
 export const PrivacyLevel = pgEnum("privacy_level", [
   "owner_only",
@@ -33,7 +33,7 @@ export const projects = pgTable("projects", {
     .default(sql`CURRENT_TIMESTAMP`)
     .notNull(),
   owner: uuid("owner").notNull(),
-  members: jsonb("members").$type<string[]>().default([]),
+  members: jsonb("members").$type<Member[]>().default([]),
 });
 
 export const tasks = pgTable("tasks", {
@@ -42,10 +42,12 @@ export const tasks = pgTable("tasks", {
     .primaryKey(),
   name: text("name").notNull(),
   description: text("description"),
+  body: text("body"),
   status: jsonb("status").$type<Status>().notNull(),
   labels: jsonb("labels"),
   subtasks: jsonb("subtasks").$type<Subtask[]>(),
   metadata: jsonb("metadata"),
+  date: timestamp("date").notNull(),
   createdAt: timestamp("created_at")
     .default(sql`CURRENT_TIMESTAMP`)
     .notNull(),
@@ -55,7 +57,7 @@ export const tasks = pgTable("tasks", {
   projectId: uuid("project_id")
     .notNull()
     .references(() => projects.id),
-  assignedTo: jsonb("assigned_to").$type<string[]>().default([]),
+  assignedTo: jsonb("assigned_to").$type<Member[]>().default([]),
 });
 
 export const messages = pgTable("messages", {
@@ -72,5 +74,5 @@ export const messages = pgTable("messages", {
     .default(sql`CURRENT_TIMESTAMP`)
     .notNull(),
   text: text("text").notNull(),
-  sender: jsonb("sender").$type<sender>().notNull(),
+  sender: jsonb("sender").$type<Sender>().notNull(),
 });
