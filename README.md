@@ -1,3 +1,6 @@
+
+![Miniatura](https://github.com/SeroC00l/ProjectManager/assets/99992585/c7c341ca-6fa6-4bd4-bebd-6c501430abb1)
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
